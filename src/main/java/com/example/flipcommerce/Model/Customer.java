@@ -2,10 +2,7 @@ package com.example.flipcommerce.Model;
 
 import com.example.flipcommerce.Enum.Gender;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.util.ArrayList;
@@ -15,6 +12,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Table(name="customer")
 public class Customer {
@@ -27,9 +25,6 @@ public class Customer {
 
     @Column(unique = true,nullable = false)
     String emailId;
-
-
-    String address;
 
     @Column(unique = true,nullable = false)
     String mobile;
