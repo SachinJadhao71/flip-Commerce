@@ -1,26 +1,19 @@
-package com.example.flipcommerce.Model;
+package com.example.flipcommerce.Dto.ResponseDto;
+
 
 import com.example.flipcommerce.Enum.ProductCategory;
 import com.example.flipcommerce.Enum.ProductStatus;
-import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.util.ArrayList;
-import java.util.List;
-
-@Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Table(name="product")
-public class Product {
+public class ProductResponseDto {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int id;
+    String sellerName;
 
     String productName;
 
@@ -31,11 +24,4 @@ public class Product {
     ProductCategory productCategory;
 
     ProductStatus productStatus;
-
-    @OneToMany(mappedBy = "product",cascade = CascadeType.ALL)
-    List<Item> items = new ArrayList<>();
-
-    @ManyToOne
-    @JoinColumn
-    Seller seller;
 }
