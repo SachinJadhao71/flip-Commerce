@@ -28,8 +28,10 @@ public class Product {
 
     int availableQuantity;
 
+    @Enumerated(EnumType.STRING)
     ProductCategory productCategory;
 
+    @Enumerated(EnumType.STRING)
     ProductStatus productStatus;
 
     @OneToMany(mappedBy = "product",cascade = CascadeType.ALL)

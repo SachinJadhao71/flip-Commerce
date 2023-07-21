@@ -2,10 +2,7 @@ package com.example.flipcommerce.Model;
 
 import com.example.flipcommerce.Enum.CardType;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.util.Date;
@@ -15,6 +12,7 @@ import java.util.Date;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Table(name="card")
 public class Card {
@@ -28,6 +26,7 @@ public class Card {
 
     int cvv;
 
+    @Enumerated(EnumType.STRING)
     CardType cardType;
 
     Date validTill;

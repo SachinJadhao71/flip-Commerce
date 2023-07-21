@@ -2,14 +2,17 @@ package com.example.flipcommerce.Service;
 
 import com.example.flipcommerce.Dto.RequestDto.ProductRequestDto;
 import com.example.flipcommerce.Dto.ResponseDto.ProductResponseDto;
+import com.example.flipcommerce.Enum.ProductCategory;
 import com.example.flipcommerce.Exception.SellerNotFoundException;
 import com.example.flipcommerce.Model.Product;
 import com.example.flipcommerce.Model.Seller;
+import com.example.flipcommerce.Repository.ProductRepository;
 import com.example.flipcommerce.Repository.SellerRepository;
 import com.example.flipcommerce.transformer.ProductTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -17,6 +20,9 @@ public class ProductService {
 
     @Autowired
     SellerRepository sellerRepository;
+
+    @Autowired
+    ProductRepository productRepository;
 
     public ProductResponseDto addProduct(ProductRequestDto productRequestDto) {
 
@@ -44,5 +50,20 @@ public class ProductService {
 
         return responseDto;
 
+    }
+
+    public List<ProductResponseDto> getProductByCategoryAndPriceGreaterThan(int price, ProductCategory category) {
+
+        List<Product> productList = productRepository.findByCategoryAndPrice(price,category);
+
+//        we have to create list of product response dto
+        List<ProductResponseDto> productResponseDtos = new ArrayList<>();
+
+        for(Product product : productList){
+            ProductResponseDto responseDto = ProductTransformer.ProductToProductResponseDto(product);
+            productResponseDtos.add(responseDto);
+        }
+
+        return productResponseDtos;
     }
 }
