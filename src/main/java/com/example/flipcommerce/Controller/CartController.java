@@ -1,8 +1,10 @@
 package com.example.flipcommerce.Controller;
 
+import com.example.flipcommerce.Dto.RequestDto.CheckoutRequestDto;
 import com.example.flipcommerce.Dto.RequestDto.ItemRequestDto;
 import com.example.flipcommerce.Dto.ResponseDto.CardResponseDto;
 import com.example.flipcommerce.Dto.ResponseDto.CartResponseDto;
+import com.example.flipcommerce.Dto.ResponseDto.OrderResponseDto;
 import com.example.flipcommerce.Model.Item;
 import com.example.flipcommerce.Service.CartService;
 import com.example.flipcommerce.Service.ItemService;
@@ -33,6 +35,17 @@ public class CartController {
         }
         catch (Exception e){
             return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/checkout")
+    public ResponseEntity checkoutCart(@RequestBody CheckoutRequestDto checkoutRequestDto){
+        try{
+            OrderResponseDto responseDto = cartService.checkoutCart(checkoutRequestDto);
+            return new ResponseEntity<>(responseDto,HttpStatus.CREATED);
+        }
+        catch (Exception e){
+            return new ResponseEntity(e.getMessage(),HttpStatus.BAD_REQUEST);
         }
     }
 }

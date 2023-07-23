@@ -9,10 +9,7 @@ import com.example.flipcommerce.Exception.InsufficientQuantityException;
 import com.example.flipcommerce.Exception.InvalidCardException;
 import com.example.flipcommerce.Exception.ProductNotExistsException;
 import com.example.flipcommerce.Model.*;
-import com.example.flipcommerce.Repository.CardRepository;
-import com.example.flipcommerce.Repository.CustomerRepository;
-import com.example.flipcommerce.Repository.OrderEntityRepository;
-import com.example.flipcommerce.Repository.ProductRepository;
+import com.example.flipcommerce.Repository.*;
 import com.example.flipcommerce.transformer.OrderTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,6 +34,13 @@ public class OrderService {
 
     @Autowired
     OrderEntityRepository orderEntityRepository;
+
+
+    @Autowired
+    CartRepository cartRepository;
+
+    @Autowired
+    ItemRepository itemRepository;
     public OrderResponseDto placeOrder(OrderRequestDto orderRequestDto) {
 
         Customer customer = customerRepository.findByEmailId(orderRequestDto.getCustomerEmail());
@@ -80,11 +84,12 @@ public class OrderService {
         item.setOrderEntity(orderEntity);
         item.setProduct(product);
 
+        orderEntity.setCustomer(customer);
         orderEntity.getItems().add(item);
 
 
         OrderEntity savedOrder = orderEntityRepository.save(orderEntity);
-        orderEntity.setCustomer(customer);
+
 
         product.getItems().add(savedOrder.getItems().get(0));
         customer.getOrders().add(savedOrder);
@@ -92,9 +97,42 @@ public class OrderService {
 //       productRepository.save(product);
 //       customerRepository.save(customer);
 
-       OrderResponseDto orderResponseDto = OrderTransformer.OrderToOrderResponseSto(savedOrder);
+       return OrderTransformer.OrderToOrderResponseSto(savedOrder);
 
-       return orderResponseDto;
+    }
 
+    public OrderEntity placeOrder(Cart cart, Card card) {
+
+        OrderEntity orderEntity = new OrderEntity();
+        orderEntity.setOrderId(String.valueOf(UUID.randomUUID()));
+        orderEntity.setCardUsed(cardService.genetrateMaskedCard(card.getCardNumber()));
+
+
+        int orderTotal = 0;
+
+        for(Item item : cart.getItems()){
+
+            Product product = item.getProduct();
+
+            if(product.getAvailableQuantity() < item.getRequiredQuantity()){
+                throw new InsufficientQuantityException("Insufficient Qunatity available for : " + product.getProductName());
+            }
+
+            int newQuantity = product.getAvailableQuantity() - item.getRequiredQuantity();
+            product.setAvailableQuantity(newQuantity);
+            if(newQuantity==0){
+                product.setProductStatus(ProductStatus.OUT_OF_STOCK);
+            }
+
+
+            orderTotal += product.getPrice() * item.getRequiredQuantity();
+            item.setOrderEntity(orderEntity);
+        }
+
+        orderEntity.setOrderTotal(orderTotal);
+        orderEntity.setItems(cart.getItems());
+        orderEntity.setCustomer(cart.getCustomer());
+
+        return orderEntity;
     }
 }
