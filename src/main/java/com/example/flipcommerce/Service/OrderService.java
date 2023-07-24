@@ -12,6 +12,8 @@ import com.example.flipcommerce.Model.*;
 import com.example.flipcommerce.Repository.*;
 import com.example.flipcommerce.transformer.OrderTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -34,6 +36,9 @@ public class OrderService {
 
     @Autowired
     OrderEntityRepository orderEntityRepository;
+
+    @Autowired
+    JavaMailSender javaMailSender;
 
 
     @Autowired
@@ -91,6 +96,9 @@ public class OrderService {
         OrderEntity savedOrder = orderEntityRepository.save(orderEntity);
 
 
+//        send mail
+        sendEmail(savedOrder);
+
         product.getItems().add(savedOrder.getItems().get(0));
         customer.getOrders().add(savedOrder);
 
@@ -134,5 +142,20 @@ public class OrderService {
         orderEntity.setCustomer(cart.getCustomer());
 
         return orderEntity;
+    }
+
+    public void sendEmail(OrderEntity order){
+
+        String text = "Congrats...! Your Order has been placed And Details as follow : '\n' " +
+                "Order Id  : " + order.getOrderId() + "'\n'" +
+                "Order Date : " + order.getOrderTotal() ;
+
+        SimpleMailMessage mail = new SimpleMailMessage();
+        mail.setFrom("VaccinationBooking123@gmail.com");
+        mail.setTo(order.getCustomer().getEmailId());
+        mail.setSubject("Your order placed");
+        mail.setText(text);
+
+        javaMailSender.send(mail);
     }
 }
