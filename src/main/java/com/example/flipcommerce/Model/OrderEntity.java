@@ -1,5 +1,6 @@
 package com.example.flipcommerce.Model;
 
+import com.example.flipcommerce.Enum.OrderStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -22,12 +23,14 @@ public class OrderEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     int id;
 
-
     String orderId;  // UUID
 
     String cardUsed;
 
     int orderTotal;
+
+    @Enumerated(value = EnumType.STRING)
+    OrderStatus orderStatus = OrderStatus.DELIVERED;
 
     @ManyToOne
     @JoinColumn

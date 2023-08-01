@@ -1,22 +1,20 @@
 package com.example.flipcommerce.Dto.ResponseDto;
 
-
-import com.example.flipcommerce.Enum.Gender;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+
+import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CustomerResponseDto {
+public class CancelOrderResponseDto {
 
-    String name;
+    String orderId;
 
-    String emailId;
+    int orderTotal;
 
-    String mobile;
-
-    Gender gender;
+    List<ItemResponseDto> items;
 }

@@ -38,5 +38,12 @@ public class ProductController {
         return new ResponseEntity(dtos,HttpStatus.FOUND);
     }
 
+//    top 5 cheapest product
+
+//    all product with out of stock status
+
+//    get all the product with quantity more than 2000 available
+
+//    get all products with their quantity
 
 }

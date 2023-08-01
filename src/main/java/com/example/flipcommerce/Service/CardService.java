@@ -23,7 +23,7 @@ public class CardService {
         Customer customer = customerRepository.findByEmailId(cardRequestDto.getCustomerEmail());
 
         if(customer == null){
-            throw new CustomerNotFoundException("Customer not Exist's");
+            throw new CustomerNotFoundException("Customer not Exists.");
         }
 
         Card card = CardTronsformer.CardRequestDtoToCard(cardRequestDto);
@@ -44,10 +44,6 @@ public class CardService {
 
 
         return cardResponseDto;
-
-
-
-
     }
 
     public String genetrateMaskedCard(String cardNo){
@@ -59,7 +55,6 @@ public class CardService {
         for(int i=0; i<n-4; i++){
             maskedCard += "X";
         }
-
         maskedCard += cardNo.substring(n-4);
 
         return maskedCard;

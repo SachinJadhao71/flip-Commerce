@@ -48,7 +48,6 @@ public class ItemService {
         }
 
 
-
         Item item = Item.builder()
                 .requiredQuantity(itemRequestDto.getRequiredQuantity())
                 .build();

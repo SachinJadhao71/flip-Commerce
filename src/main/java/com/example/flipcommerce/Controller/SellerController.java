@@ -25,4 +25,10 @@ public class SellerController {
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
 
     }
+
+//    top 5 seller with cheapest product
+
+//    update email of seller
+
+//    get all seller
 }

@@ -1,5 +1,6 @@
 package com.example.flipcommerce.transformer;
 
+import com.example.flipcommerce.Dto.ResponseDto.CancelOrderResponseDto;
 import com.example.flipcommerce.Dto.ResponseDto.ItemResponseDto;
 import com.example.flipcommerce.Dto.ResponseDto.OrderResponseDto;
 import com.example.flipcommerce.Model.Item;
@@ -28,6 +29,21 @@ public class OrderTransformer {
                 .cardUsed(orderEntity.getCardUsed())
                 .items(list)
                 .orderDate(date)
+                .build();
+    }
+
+    public static CancelOrderResponseDto orderToCancelOrderResponseDto(OrderEntity order){
+        List<ItemResponseDto> list = new ArrayList<>();
+
+        for(Item item : order.getItems()){
+            ItemResponseDto responseDto = ItemTransformer.ItemToItemResponseDto(item);
+            list.add(responseDto);
+        }
+
+        return CancelOrderResponseDto.builder()
+                .orderId(order.getOrderId())
+                .orderTotal(order.getOrderTotal())
+                .items(list)
                 .build();
     }
 }

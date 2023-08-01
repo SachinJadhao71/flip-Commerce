@@ -2,12 +2,11 @@ package com.example.flipcommerce.Service;
 
 import com.example.flipcommerce.Controller.CustomerController;
 import com.example.flipcommerce.Dto.RequestDto.OrderRequestDto;
+import com.example.flipcommerce.Dto.ResponseDto.CancelOrderResponseDto;
 import com.example.flipcommerce.Dto.ResponseDto.OrderResponseDto;
+import com.example.flipcommerce.Enum.OrderStatus;
 import com.example.flipcommerce.Enum.ProductStatus;
-import com.example.flipcommerce.Exception.CustomerNotFoundException;
-import com.example.flipcommerce.Exception.InsufficientQuantityException;
-import com.example.flipcommerce.Exception.InvalidCardException;
-import com.example.flipcommerce.Exception.ProductNotExistsException;
+import com.example.flipcommerce.Exception.*;
 import com.example.flipcommerce.Model.*;
 import com.example.flipcommerce.Repository.*;
 import com.example.flipcommerce.transformer.OrderTransformer;
@@ -16,9 +15,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class OrderService {
@@ -158,4 +155,46 @@ public class OrderService {
 
         javaMailSender.send(mail);
     }
+
+    public List<OrderResponseDto> getFiveHighest() {
+
+        List<OrderEntity> orderEntities = orderEntityRepository.findByOrder();
+
+        List<OrderResponseDto> list = new ArrayList<>();
+        for(OrderEntity order : orderEntities){
+            list.add(OrderTransformer.OrderToOrderResponseSto(order));
+        }
+
+        return list;
+
+    }
+
+
+    public CancelOrderResponseDto cancelOrder(String orderId) {
+
+        OrderEntity orderEntity = orderEntityRepository.findByOrderId(orderId);
+
+        if(orderEntity==null){
+            throw new OrderIdNotValidException("OrderId is not valid");
+        }
+
+        List<Item> items = orderEntity.getItems();
+
+        for(Item item : items){
+            Product product = item.getProduct();
+            product.setAvailableQuantity(product.getAvailableQuantity() + item.getRequiredQuantity());
+            if(product.getProductStatus() == ProductStatus.OUT_OF_STOCK){
+                product.setProductStatus(ProductStatus.AVAILABLE);
+            }
+            productRepository.save(product);
+        }
+
+        orderEntity.setOrderStatus(OrderStatus.CANCELLED);
+
+        OrderEntity savedOrder = orderEntityRepository.save(orderEntity);
+
+        return OrderTransformer.orderToCancelOrderResponseDto(savedOrder);
+
+    }
+
 }
