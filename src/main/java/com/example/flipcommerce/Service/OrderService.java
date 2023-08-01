@@ -145,7 +145,7 @@ public class OrderService {
 
         String text = "Congrats...! Your Order has been placed And Details as follow : '\n' " +
                 "Order Id  : " + order.getOrderId() + "'\n'" +
-                "Order Date : " + order.getOrderTotal() ;
+                "Order Total : " + order.getOrderTotal();
 
         SimpleMailMessage mail = new SimpleMailMessage();
         mail.setFrom("VaccinationBooking123@gmail.com");
@@ -192,6 +192,20 @@ public class OrderService {
         orderEntity.setOrderStatus(OrderStatus.CANCELLED);
 
         OrderEntity savedOrder = orderEntityRepository.save(orderEntity);
+
+//        sending mail
+        String text = "Your Order Has been cancelled. Order details as follow: '\n' " +
+                "Order Id  : " + savedOrder.getOrderId() + "'\n'" +
+                "Order Total : " + savedOrder.getOrderTotal();
+
+        SimpleMailMessage mail = new SimpleMailMessage();
+        mail.setFrom("VaccinationBooking123@gmail.com");
+        mail.setTo(savedOrder.getCustomer().getEmailId());
+        mail.setSubject("Order Cancelled");
+        mail.setText(text);
+
+        javaMailSender.send(mail);
+
 
         return OrderTransformer.orderToCancelOrderResponseDto(savedOrder);
 

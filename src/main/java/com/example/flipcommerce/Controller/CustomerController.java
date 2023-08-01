@@ -61,5 +61,17 @@ public class CustomerController {
         List<CustomerResponseDto> responseDtoList = customerService.getAllCustomers();
         return new ResponseEntity<>(responseDtoList,HttpStatus.ACCEPTED);
     }
+// update mail
 
+    @PutMapping("/update_email")
+    public ResponseEntity updateEmail(@RequestParam("oldEmail") String oldEmail, @RequestParam("newEmail") String newEmail){
+        try {
+            String ans = customerService.updateEmail(oldEmail, newEmail);
+            return new ResponseEntity(ans,HttpStatus.OK);
+        }
+        catch (Exception e){
+            return new ResponseEntity(e.getMessage(),HttpStatus.BAD_REQUEST);
+        }
+
+    }
 }

@@ -2,7 +2,9 @@ package com.example.flipcommerce.Service;
 
 import com.example.flipcommerce.Dto.RequestDto.ProductRequestDto;
 import com.example.flipcommerce.Dto.ResponseDto.ProductResponseDto;
+import com.example.flipcommerce.Dto.ResponseDto.ProductWithQuantityDto;
 import com.example.flipcommerce.Enum.ProductCategory;
+import com.example.flipcommerce.Enum.ProductStatus;
 import com.example.flipcommerce.Exception.SellerNotFoundException;
 import com.example.flipcommerce.Model.Product;
 import com.example.flipcommerce.Model.Seller;
@@ -68,4 +70,47 @@ public class ProductService {
     }
 
 
+    public List<String> getTopFiveCheapestProduct() {
+        List<Product> products = productRepository.findTopFiveCheapest();
+
+        List<String> productNames = new ArrayList<>();
+
+        for(Product product : products){
+            productNames.add(product.getProductName());
+        }
+
+        return productNames;
+    }
+
+    public List<String> getAllOutOfStock(ProductStatus productStatus) {
+
+        List<Product> products = productRepository.findByProductStatus(productStatus);
+
+        List<String> productNames = new ArrayList<>();
+
+        for(Product product : products){
+            productNames.add(product.getProductName());
+        }
+
+        return productNames;
+    }
+
+    public List<ProductWithQuantityDto> getAllProductWithQuantity() {
+
+        List<Product> products = productRepository.findAll();
+
+        List<ProductWithQuantityDto> dtos = new ArrayList<>();
+
+        for(Product product : products){
+            if(product.getAvailableQuantity() != 0) {
+                ProductWithQuantityDto productWithQuantityDto = new ProductWithQuantityDto();
+                productWithQuantityDto.setProductName(product.getProductName());
+                productWithQuantityDto.setQuantity(product.getAvailableQuantity());
+
+                dtos.add(productWithQuantityDto);
+            }
+        }
+
+        return dtos;
+    }
 }

@@ -30,11 +30,15 @@ public class OrderController {
     }
 
 
-    @PutMapping("/cancel")
+    @DeleteMapping("/cancel")
     public ResponseEntity cancelOrder(@RequestParam("orderId") String orderId){
-        CancelOrderResponseDto responseDto = orderService.cancelOrder(orderId);
-        return new ResponseEntity<>(responseDto,HttpStatus.ACCEPTED);
-
+        try {
+            CancelOrderResponseDto responseDto = orderService.cancelOrder(orderId);
+            return new ResponseEntity<>(responseDto, HttpStatus.ACCEPTED);
+        }
+        catch (Exception e){
+            return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
+        }
     }
 
 

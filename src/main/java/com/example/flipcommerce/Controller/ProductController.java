@@ -2,7 +2,9 @@ package com.example.flipcommerce.Controller;
 
 import com.example.flipcommerce.Dto.RequestDto.ProductRequestDto;
 import com.example.flipcommerce.Dto.ResponseDto.ProductResponseDto;
+import com.example.flipcommerce.Dto.ResponseDto.ProductWithQuantityDto;
 import com.example.flipcommerce.Enum.ProductCategory;
+import com.example.flipcommerce.Enum.ProductStatus;
 import com.example.flipcommerce.Service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -40,10 +42,31 @@ public class ProductController {
 
 //    top 5 cheapest product
 
+
+    @GetMapping("/top_five_cheapest")
+    public ResponseEntity getTopFiveCheapestProduct(){
+        List<String> products = productService.getTopFiveCheapestProduct();
+        return new ResponseEntity(products,HttpStatus.ACCEPTED);
+    }
+
 //    all product with out of stock status
 
-//    get all the product with quantity more than 2000 available
+    @GetMapping("/get_all_out_of_stock")
+    public ResponseEntity getAllOutOfStock(@RequestParam("status") ProductStatus productStatus){
+        List<String> products = productService.getAllOutOfStock(productStatus);
+
+        return new ResponseEntity(products,HttpStatus.ACCEPTED);
+    }
+
+
 
 //    get all products with their quantity
+
+    @GetMapping("/get_all_with_quantity")
+    public ResponseEntity getAllProductWithQuantity(){
+        List<ProductWithQuantityDto> dtos = productService.getAllProductWithQuantity();
+
+        return new ResponseEntity<>(dtos,HttpStatus.ACCEPTED);
+    }
 
 }

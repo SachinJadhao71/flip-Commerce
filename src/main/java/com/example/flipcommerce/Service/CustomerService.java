@@ -4,9 +4,12 @@ import com.example.flipcommerce.Dto.RequestDto.CustomerRequestDto;
 import com.example.flipcommerce.Dto.ResponseDto.CustomerResponseDto;
 import com.example.flipcommerce.Enum.Gender;
 import com.example.flipcommerce.Enum.OrderStatus;
+import com.example.flipcommerce.Exception.CustomerNotFoundException;
+import com.example.flipcommerce.Exception.SellerNotFoundException;
 import com.example.flipcommerce.Model.Cart;
 import com.example.flipcommerce.Model.Customer;
 import com.example.flipcommerce.Model.OrderEntity;
+import com.example.flipcommerce.Model.Seller;
 import com.example.flipcommerce.Repository.CustomerRepository;
 import com.example.flipcommerce.transformer.CustomerTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -106,5 +109,21 @@ public class CustomerService {
         }
 
         return responseDtoList;
+    }
+
+    public String updateEmail(String oldEmail, String newEmail) {
+
+
+        Customer customer = customerRepository.findByEmailId(oldEmail);
+
+        if(customer == null){
+            throw new CustomerNotFoundException("Customer doesn't exists");
+        }
+
+        customer.setEmailId(newEmail);
+
+        Customer savedcustomer = customerRepository.save(customer);
+
+        return "Congrats..! " + savedcustomer.getName() + ". your Email has been Updated";
     }
 }
